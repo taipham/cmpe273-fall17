@@ -1,4 +1,4 @@
-from flask import Flask, request, Response, url_for
+from flask import Flask, request, Response, url_for, abort
 import rocksdb
 import uuid
 import os
@@ -25,16 +25,13 @@ def script_uploader():
 			key = uuid.uuid4().hex
 			file = request.files['data']
 			filename = file.filename
+			# file_path is the key generated 
 			file_path = UPLOAD_FOLDER+'/'+key
 			file.save(os.path.join(app.config['UPLOAD_FOLDER'], key))
-			# You should use os.path.join here too.
-			#with open(UPLOAD_FOLDER+'/'+filename) as f:
-			#	file_content = f.read()
-			#	print(file_content)
-			#print(url_for('uploaded_file',filename=filename))
 			db.put(key.encode(), file_path.encode())
 			return Response("{'script-id': %s}" % key, status=201, mimetype='application/json')
-	return "V1/script"
+	else:
+		return abort(404)
 
 @app.route("/api/v1/scripts/test")
 def test():
@@ -45,7 +42,8 @@ def test():
 
 @app.route('/api/v1/scripts/<script_id>')
 def script_invoker(script_id):
-	result = subprocess.run(['python3', UPLOAD_FOLDER+'/'+'foo.py'], stdout=subprocess.PIPE)
+	print("script_id is " + script_id)
+	result = subprocess.run(['python3', UPLOAD_FOLDER+'/'+script_id], stdout=subprocess.PIPE)
 	return Response(result.stdout, status=200)
 
 	
