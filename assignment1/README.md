@@ -1,3 +1,8 @@
+# How to run:
+- Build a new docker image with the Dockerfile (I include Flask in the built) : docker build -t ubuntu-python3.6-rocksdb-grpc:1.0 .
+- Run server (docker run): docker run -p 8000:8000 -it --rm --name lab1-server -v "$PWD":/usr/src/myapp -w /usr/src/myapp ubuntu-python3.6-rocksdb-grpc:1.0 python3.6 server.py
+- POST/GET using curl as requirement 
+
 # Requirements
 
 You will be implementing a dynamic Python invoker REST service. The service will have the following features:
