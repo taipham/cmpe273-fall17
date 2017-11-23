@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+message EmptyRequest {
+	
+}
+
+message Request {
+    string data = 1;
+}
+
+message Response {
+    string data = 1;
+}
+
+message ResponseRep {
+    string key = 1;
+    string value = 2;
+}
+
+message RequestInt {
+    int32 data = 1;
+}
+
+service Datastore {
+   rpc put(Request) returns (Response) {}
+   rpc get(Request) returns (Response) {}
+   rpc replicate(RequestInt) returns (stream Response) {}
+}
