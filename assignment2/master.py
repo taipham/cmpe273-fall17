@@ -24,7 +24,6 @@ class MyDatastoreServicer(datastore_pb2_grpc.DatastoreServicer):
         self.db = rocksdb.DB("master.db", rocksdb.Options(create_if_missing=True))
 
     def replicate(self, request, context):
-        print("client #" + str(request.data) + " connecting")
         for item in self.history:
             yield datastore_pb2.Response(data=item)
 
