@@ -12,13 +12,12 @@ import rocksdb
 import time
 PORT = 3000
 
-client_num = 0
 
 class DatastoreClient():
-    def __init__(self, host='0.0.0.0', port=3000):
+    def __init__(self, host='0.0.0.0', port=3000, client=0):
         self.channel = grpc.insecure_channel('%s:%d' % (host, port))
         self.stub = datastore_pb2_grpc.DatastoreStub(self.channel)
-        self.db = rocksdb.DB("client" + str(client_num) + ".db", rocksdb.Options(create_if_missing=True))
+        self.db = rocksdb.DB("client" + str(client) + ".db", rocksdb.Options(create_if_missing=True))
 
     def connect(self, value):
         resp = self.stub.replicate(datastore_pb2.RequestInt(data=value))
@@ -34,7 +33,7 @@ def main():
     args = parser.parse_args()
     client_num = int(args.client)
     print("Client is connecting to Server at {}:{}...".format(args.host, PORT))
-    client = DatastoreClient(host=args.host)
+    client = DatastoreClient(host=args.host, client=client_num)
     while True:
         resp = client.connect(client_num)
         for item in resp:
